@@ -1,0 +1,124 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Resources;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace QuantumWorldAppDomainModel.Domain
+{
+    public class Battle : IBattle
+    {
+        public int Attack(int totalAP, int totalHP)
+        {
+            int result;
+            result = totalHP - totalAP;
+            return result;
+        }
+
+        public List<Resource> CollectRewards(Enemy enemy)
+        {
+            List<Resource> rewards = new List<Resource>();
+            rewards = enemy.GetRewards();
+            return rewards;
+        }
+
+        public void CalculateDestroyedShips(List<Ship> ships, int damage)
+        {
+            int result = 0;
+
+            while (damage > 0)
+            {
+                foreach (var ship in ships)
+                {
+                    result = (int)MathF.Round(damage / ship.HealthPoints);
+
+                    if (ship.Count > 0)
+                    {
+                        {
+                            if (result >= ship.Count)
+                            {
+                                damage -= ship.Count * ship.HealthPoints;
+                                ship.SetCount(0);
+
+                            }
+                            else if (result < ship.Count)
+                            {
+                                ship.CalculateCount(-result);
+                                damage = 0;
+                            }
+                            else if (result <= 0)
+                            {
+                                damage = 0;
+                            }
+                        }
+                    }
+                }
+                damage = 0;
+            }
+        }
+
+        public int GetTotalAP(List<Ship> ships)
+        {
+            int totalAP = 0;
+            foreach (var ship in ships)
+            {
+                totalAP += ship.Count * ship.AttackPower;
+            }
+            return totalAP;
+        }
+
+        public int GetTotalHP(List<Ship> ships)
+        {
+            int totalHP = 0;
+            foreach (var ship in ships)
+            {
+                totalHP += ship.Count * ship.HealthPoints;
+            }
+            return totalHP;
+        }
+
+        public void StartBattle(List<Ship> playerShips, List<Resource> playerResources, Enemy enemy)
+        {
+            bool continiueFight = true;     
+                       
+            var enemyShips = enemy.Ships;
+            var playerTotalAP = GetTotalAP(playerShips);
+            var playerTotalHP = GetTotalHP(playerShips);
+            var enemyTotalAP = GetTotalAP(enemyShips);
+            var enemyTotalHP = GetTotalHP(enemyShips);
+
+            while (continiueFight)
+            {
+                enemyTotalHP = Attack(playerTotalAP, enemyTotalHP);
+                CalculateDestroyedShips(enemyShips, playerTotalAP);
+                enemyTotalAP = GetTotalAP(enemyShips);
+                if (enemyTotalHP <= 0)
+                {
+                    var enemyRewards = CollectRewards(enemy);
+                    AssignRewards(playerResources, enemyRewards);
+                    continiueFight = false;
+                    break;
+                }
+                playerTotalHP = Attack(enemyTotalAP, playerTotalHP);
+                if (playerTotalHP <= 0)
+                {
+                    CalculateDestroyedShips(playerShips, enemyTotalAP);
+                    continiueFight = false;
+                    break;
+                }
+                else if (playerTotalHP > 0)
+                {
+                    CalculateDestroyedShips(playerShips, enemyTotalAP);
+                    playerTotalAP = GetTotalAP(playerShips);
+                }
+            }
+        }
+
+        public void AssignRewards(List<Resource> playerResources, List<Resource> rewards)
+        {
+            playerResources.Zip(rewards, (a, b) => (a.Value + b.Value));
+        }
+    }
+}
+
