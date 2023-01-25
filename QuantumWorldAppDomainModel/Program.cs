@@ -19,8 +19,14 @@ var ships = new List<Ship>()
     new LightFighterShip(),
     new HeavyFighterShip(),
 };
+var enemies = new List<Enemy>()
+{
+    new PiratesEnemy(),
+    new OutsidersEnemy(),
+};
+var battle = new Battle();
 
-var user = new User(resources, buildings, research, ships);
+var user = new User(resources, buildings, research, ships, enemies, battle);
 
 foreach (var resource in resources)
 {

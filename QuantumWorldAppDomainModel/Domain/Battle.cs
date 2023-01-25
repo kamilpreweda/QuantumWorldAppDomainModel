@@ -23,9 +23,10 @@ namespace QuantumWorldAppDomainModel.Domain
             return rewards;
         }
 
-        public void CalculateDestroyedShips(List<Ship> ships, int damage)
+        public void CalculateDestroyedShips(List<Ship> ships, int damage, out int remainingDamage)
         {
             int result = 0;
+            remainingDamage = 0;
 
             while (damage > 0)
             {
@@ -40,24 +41,23 @@ namespace QuantumWorldAppDomainModel.Domain
                             {
                                 damage -= ship.Count * ship.HealthPoints;
                                 ship.SetCount(0);
-
+                                remainingDamage = damage;
                             }
                             else if (result < ship.Count)
                             {
                                 ship.CalculateCount(-result);
-                                damage = 0;
+                                damage = 0;                                
                             }
                             else if (result <= 0)
                             {
-                                damage = 0;
+                                damage = 0;                                
                             }
                         }
-                    }
+                    }                    
                 }
-                damage = 0;
-            }
+                damage = 0;                
+            }            
         }
-
         public int GetTotalAP(List<Ship> ships)
         {
             int totalAP = 0;
@@ -81,35 +81,34 @@ namespace QuantumWorldAppDomainModel.Domain
         public void StartBattle(List<Ship> playerShips, List<Resource> playerResources, Enemy enemy)
         {
             bool continiueFight = true;     
-                       
-            var enemyShips = enemy.Ships;
+           
             var playerTotalAP = GetTotalAP(playerShips);
             var playerTotalHP = GetTotalHP(playerShips);
-            var enemyTotalAP = GetTotalAP(enemyShips);
-            var enemyTotalHP = GetTotalHP(enemyShips);
+            var enemyTotalAP = GetTotalAP(enemy.Ships);
+            var enemyTotalHP = GetTotalHP(enemy.Ships);
 
             while (continiueFight)
             {
                 enemyTotalHP = Attack(playerTotalAP, enemyTotalHP);
-                CalculateDestroyedShips(enemyShips, playerTotalAP);
-                enemyTotalAP = GetTotalAP(enemyShips);
+                CalculateDestroyedShips(enemy.Ships, playerTotalAP, out int remainingDamage);
+                enemyTotalAP = GetTotalAP(enemy.Ships);
                 if (enemyTotalHP <= 0)
                 {
                     var enemyRewards = CollectRewards(enemy);
                     AssignRewards(playerResources, enemyRewards);
-                    continiueFight = false;
+                    continiueFight = false;                    ;
                     break;
                 }
                 playerTotalHP = Attack(enemyTotalAP, playerTotalHP);
                 if (playerTotalHP <= 0)
                 {
-                    CalculateDestroyedShips(playerShips, enemyTotalAP);
-                    continiueFight = false;
+                    CalculateDestroyedShips(playerShips, enemyTotalAP, out remainingDamage);
+                    continiueFight = false;                    
                     break;
                 }
                 else if (playerTotalHP > 0)
                 {
-                    CalculateDestroyedShips(playerShips, enemyTotalAP);
+                    CalculateDestroyedShips(playerShips, enemyTotalAP, out remainingDamage);
                     playerTotalAP = GetTotalAP(playerShips);
                 }
             }

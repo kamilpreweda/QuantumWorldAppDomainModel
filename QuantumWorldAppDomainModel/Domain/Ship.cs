@@ -11,7 +11,7 @@ namespace QuantumWorldAppDomainModel.Domain
         public string Name { get; protected set; }
         public ShipType Type { get; protected set; }
         public abstract string Description { get; }
-        public int Count { get; protected set; } = 0;
+        public int Count { get; protected set; } 
         public TimeSpan TimeToBuild { get; protected set; }
         protected abstract TimeSpan BaseTimeToBuild { get; }
         protected abstract float TimeMultiplier { get; }
@@ -28,6 +28,11 @@ namespace QuantumWorldAppDomainModel.Domain
         public Ship()
         {
             AutoSetBasicAttributes();
+        }
+        public Ship(int count)
+        {
+            AutoSetBasicAttributes();
+            SetCount(count);
         }
         public int GetTotalHP()
         {
@@ -47,10 +52,13 @@ namespace QuantumWorldAppDomainModel.Domain
         {
             Count = count;
         }
-        public int CalculateCount(int count)
+        public int GetCount()
         {
-            Count += count;
-            return count;
+            return Count;
+        }
+        public void CalculateCount(int count)
+        {
+            Count += count;            
         }
         private void SetNewTime()
         {

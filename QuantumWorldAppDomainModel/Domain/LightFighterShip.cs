@@ -24,5 +24,14 @@ namespace QuantumWorldAppDomainModel.Domain
             new CarbonFiberResource(100),
             new QuantumGlassResource(50),
         };
+
+        public LightFighterShip() : base()
+        {
+
+        }
+        public LightFighterShip(int count) : base(count)
+        {
+
+        }
     }
 }
