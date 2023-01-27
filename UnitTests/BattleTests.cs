@@ -10,7 +10,7 @@ using FluentAssertions;
 namespace UnitTests
 {
     public class BattleTests
-    {        
+    {
         [Fact]
         public void Battle_Attack_Should_Subtract_TotalAp_From_TotalHp()
         {
@@ -52,7 +52,7 @@ namespace UnitTests
             {
                 lightFighterShip,
                 heavyFighterShip
-            };       
+            };
 
             int expectedResult = 10;
             battle.CalculateDestroyedShips(ships, damage, out int remainingDamage);
@@ -96,7 +96,7 @@ namespace UnitTests
             lightFighterShip.SetCount(5);
             heavyFighterShip.SetCount(10);
 
-            var ships = new List<Ship>() 
+            var ships = new List<Ship>()
             {
             lightFighterShip,
             heavyFighterShip
@@ -118,7 +118,7 @@ namespace UnitTests
             lightFighterShip.SetCount(7);
             heavyFighterShip.SetCount(2);
 
-            var ships = new List<Ship>() 
+            var ships = new List<Ship>()
             {
             lightFighterShip,
             heavyFighterShip
@@ -140,18 +140,18 @@ namespace UnitTests
             playerLightFighter.SetCount(10);
             playerHeavyFighter.SetCount(10);
             var playerShips = new List<Ship>()
-            {
-                playerLightFighter,
-                playerHeavyFighter
-            };
+                {
+                    playerLightFighter,
+                    playerHeavyFighter
+                };
 
-            var piratesEnemy = new PiratesEnemy();            
+            var piratesEnemy = new PiratesEnemy();
 
             var playerResources = new List<Resource>();
 
             battle.StartBattle(playerShips, playerResources, piratesEnemy);
 
-            var expectedPlayerLightFighterCount = 4;
+            var expectedPlayerLightFighterCount = 1;
             var expectedPlayerHeavyFighterCount = 10;
 
             var expectedEnemyLightFighterCount = 0;
@@ -162,12 +162,37 @@ namespace UnitTests
 
             var remainingEnemyShips = piratesEnemy.GetShips();
 
-            // var remainingEnemyLightFighterShips = remainingEnemyShips.SingleOrDefault(s => s.Type == ShipType.LightFighterShip);
-            // var remainingEnemyHeavyFighterShips = remainingEnemyShips.SingleOrDefault(s => s.Type == ShipType.LightFighterShip);
-
             Assert.Equal(expectedEnemyLightFighterCount, remainingEnemyShips.SingleOrDefault(s => s.Type == ShipType.LightFighterShip).Count);
             Assert.Equal(expectedEnemyHeavyFighterCount, remainingEnemyShips.SingleOrDefault(s => s.Type == ShipType.LightFighterShip).Count);
-            
+
+        }
+
+        [Fact]
+        public void Battle_Assign_Should_Add_Correct_Resources_Values_To_PlayerResources()
+        {
+            var playerResources = new List<Resource>()
+            {
+                new CarbonFiberResource(6000),
+                new QuantumGlassResource(6000),
+            };
+
+            var battle = new Battle();
+            var piratesEnemy = new PiratesEnemy();
+            var rewards = piratesEnemy.GetRewards();
+
+            battle.AssignRewards(playerResources, rewards);
+
+            var expectedCarbonFiberValue = 8000;
+            var expectedQuantumGlassValue = 8000;
+
+            var actualCarbonFiberValue = playerResources.SingleOrDefault(r => r.Type == ResourceType.CarbonFiberResource).Value;
+            var actualQuantumGlassValue = playerResources.SingleOrDefault(r => r.Type == ResourceType.QuantumGlassResource).Value;
+
+            Assert.Equal(expectedCarbonFiberValue, actualCarbonFiberValue);
+            Assert.Equal(expectedQuantumGlassValue, actualQuantumGlassValue);   
         }
     }
+    
+
 }
+

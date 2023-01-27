@@ -46,17 +46,17 @@ namespace QuantumWorldAppDomainModel.Domain
                             else if (result < ship.Count)
                             {
                                 ship.CalculateCount(-result);
-                                damage = 0;                                
+                                damage = 0;
                             }
                             else if (result <= 0)
                             {
-                                damage = 0;                                
+                                damage = 0;
                             }
                         }
-                    }                    
+                    }
                 }
-                damage = 0;                
-            }            
+                damage = 0;
+            }
         }
         public int GetTotalAP(List<Ship> ships)
         {
@@ -79,9 +79,9 @@ namespace QuantumWorldAppDomainModel.Domain
         }
 
         public void StartBattle(List<Ship> playerShips, List<Resource> playerResources, Enemy enemy)
-        {
-            bool continiueFight = true;     
-           
+        {            
+            bool continiueFight = true;            
+
             var playerTotalAP = GetTotalAP(playerShips);
             var playerTotalHP = GetTotalHP(playerShips);
             var enemyTotalAP = GetTotalAP(enemy.Ships);
@@ -96,14 +96,15 @@ namespace QuantumWorldAppDomainModel.Domain
                 {
                     var enemyRewards = CollectRewards(enemy);
                     AssignRewards(playerResources, enemyRewards);
-                    continiueFight = false;                    ;
+                    enemy.Defeat();                  
+                    continiueFight = false; ;
                     break;
                 }
                 playerTotalHP = Attack(enemyTotalAP, playerTotalHP);
                 if (playerTotalHP <= 0)
                 {
                     CalculateDestroyedShips(playerShips, enemyTotalAP, out remainingDamage);
-                    continiueFight = false;                    
+                    continiueFight = false;
                     break;
                 }
                 else if (playerTotalHP > 0)
@@ -116,7 +117,10 @@ namespace QuantumWorldAppDomainModel.Domain
 
         public void AssignRewards(List<Resource> playerResources, List<Resource> rewards)
         {
-            playerResources.Zip(rewards, (a, b) => (a.Value + b.Value));
+            var carbonReward = rewards.Find(r => r.Name == "CarbonFiberResource");
+            var quantumReward = rewards.Find(r => r.Name == "QuantumGlassResource");
+            playerResources.Where(r => r.Name == "CarbonFiberResource").ToList().ForEach(r => r.Value += carbonReward.Value);
+            playerResources.Where(r => r.Name == "QuantumGlassResource").ToList().ForEach(r => r.Value += quantumReward.Value);
         }
     }
 }

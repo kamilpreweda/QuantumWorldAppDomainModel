@@ -8,9 +8,7 @@ namespace QuantumWorldAppDomainModel.Domain
 {
     public class OutsidersEnemy : Enemy
     {
-        public override string Description => "Outsiders Description";
-
-        public override List<Ship> Ships { get => Ships; protected set => Ships = value; }
+        public override string Description => "Outsiders Description";        
 
         protected override TimeSpan BaseTimeToAttack => TimeSpan.FromSeconds(60);
 
@@ -22,7 +20,7 @@ namespace QuantumWorldAppDomainModel.Domain
             new QuantumGlassResource(5000),
         };
 
-        protected override List<Ship> BaseShips => new List<Ship>()
+        public override List<Ship> BaseShips => new List<Ship>()
         {
             new LightFighterShip(50),
             new HeavyFighterShip(50),

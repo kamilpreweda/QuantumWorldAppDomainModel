@@ -18,15 +18,19 @@ namespace QuantumWorldAppDomainModel.Domain
         protected abstract List<Resource> Rewards { get; }        
         public bool IsUnderAttack { get; protected set; }
         public DateTime FinishDate { get; protected set; }
-        protected abstract List<Ship> BaseShips { get;}
-        public abstract List<Ship> Ships { get; protected set; }
+        public  abstract List<Ship> BaseShips { get; }
+        public List<Ship> Ships { get; protected set; }
 
         public List<Ship> remainingShips { get; protected set; }
 
         public Enemy()
         {
             AutoSetBasicAttributes();
-            Ships = BaseShips;
+            Ships = GetEnemyBaseShips();
+        }
+        public List<Ship> GetEnemyBaseShips()
+        {
+            return BaseShips;
         }
         public int GetEnemyTotalHP()
         {
@@ -54,6 +58,11 @@ namespace QuantumWorldAppDomainModel.Domain
         public List<Ship> GetShips()
         {
             return Ships;
+        }
+
+        public void Defeat()
+        {            
+            IsDefeated = true;          
         }
 
         private void SetNewTime()

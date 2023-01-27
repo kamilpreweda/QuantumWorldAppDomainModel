@@ -33,11 +33,14 @@ namespace QuantumWorldAppDomainModel.Domain
                 throw new Exception("There is no such building.");
             }
 
-            if (CanAfford(building.Cost))
+            if (!CanAfford(building.Cost))
             {
-                SpendResources(Resources, building.Cost);
-                building.UpgradeBuilding();
+                throw new Exception("Not enough resources.");
             }
+                        
+            SpendResources(Resources, building.Cost);
+            building.UpgradeBuilding();
+            
         }
         public void UpgradeResearch(ResearchType type)
         {
@@ -69,7 +72,16 @@ namespace QuantumWorldAppDomainModel.Domain
                 ship.BuildShip();
             }
         }
+        public void StartBattle(EnemyType type)
+        {
 
+            var enemy = Enemies.FirstOrDefault(e => e.Type == type);
+            if (enemy == null)
+            {
+                throw new Exception("There is no such enemy");
+            }
+            _battle.StartBattle(Ships, Resources, enemy);
+        }
         private bool CanAfford(List<Resource> cost)
         {
             foreach (var costResource in cost)
@@ -86,7 +98,6 @@ namespace QuantumWorldAppDomainModel.Domain
             }
             return true;
         }
-
         private void SpendResources(List<Resource> resources, List<Resource> cost)
         {
             foreach (var costResource in cost)
@@ -99,17 +110,7 @@ namespace QuantumWorldAppDomainModel.Domain
                 currentPlayerResource.Value -= costResource.Value;
             }
         }
-
-        public void StartBattle(EnemyType type)
-        {
-
-            var enemy = Enemies.FirstOrDefault(e => e.Type == type);
-            if (enemy == null)
-            {
-                throw new Exception("There is no such enemy");
-            }
-            _battle.StartBattle(Ships, Resources, enemy);
-        }
+                
     }
 }
 

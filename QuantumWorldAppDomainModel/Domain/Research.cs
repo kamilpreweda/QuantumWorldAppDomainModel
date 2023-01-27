@@ -67,9 +67,9 @@ namespace QuantumWorldAppDomainModel.Domain
         }
         public void UpgradeResearch()
         {
-            IncreaseLevel();
             SetNewCost();
             SetNewTime();
+            IncreaseLevel();         
 
         }
     }

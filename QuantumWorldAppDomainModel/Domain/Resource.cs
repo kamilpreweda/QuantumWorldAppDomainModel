@@ -10,7 +10,7 @@ namespace QuantumWorldAppDomainModel.Domain
     public abstract class Resource
     {
         public string Name { get; set; }
-        public ResourceType Type { get; set; }
+        public ResourceType Type { get; set; }        
         protected abstract float BaseValue { get; }
         public float Value { get; set; }
 

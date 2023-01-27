@@ -44,7 +44,7 @@ public abstract class Building
         SetName();
         SetType();
         SetCost();
-        SetNewTime();
+        SetNewTime();        
     }
     private void SetName()
     {
@@ -63,12 +63,11 @@ public abstract class Building
     private void SetCost()
     {
         Cost = BaseCost;
-    }
+    }    
     public void UpgradeBuilding()
-    {                                     
-        IncreaseLevel();
+    {
+        SetNewTime();
         SetNewCost();
-        SetNewTime();             
-      
+        IncreaseLevel();      
     }
 }

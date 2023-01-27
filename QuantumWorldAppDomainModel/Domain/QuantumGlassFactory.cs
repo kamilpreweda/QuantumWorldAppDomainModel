@@ -17,7 +17,7 @@ namespace QuantumWorldAppDomainModel.Domain
 
         protected override List<Resource> BaseCost => new List<Resource>()
         {
-            new CarbonFiberResource(150),
+            new CarbonFiberResource(100),
             new QuantumGlassResource(100)
         };
     }

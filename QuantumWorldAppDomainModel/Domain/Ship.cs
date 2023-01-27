@@ -36,12 +36,12 @@ namespace QuantumWorldAppDomainModel.Domain
         }
         public int GetTotalHP()
         {
-            var totalHP = Count + HealthPoints;
+            var totalHP = Count * HealthPoints;
             return totalHP;
         }
         public int GetTotalAP()
         {
-            var totalAP = Count + AttackPower;
+            var totalAP = Count * AttackPower;
             return totalAP;
         }
         public void BuildShip()
